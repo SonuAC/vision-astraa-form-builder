@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>VisionAstraa — Analytics Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --green:#00c896;--green-glow:rgba(0,200,150,.15);
+      --blue:#1a6cff;--bg:#0b0f1a;--bg2:#111827;--bg3:#1c2436;
+      --card:#161d2e;--border:rgba(255,255,255,.08);
+      --text:#e8eaf0;--muted:#8a94a8;--radius:16px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 20px 40px;}
+    /* HEADER */
+    .header{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto 28px;flex-wrap:wrap;gap:14px;}
+    .logo-row{display:flex;align-items:center;gap:12px;}
+    .logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;}
+    .logo-text .main{font-size:18px;font-weight:800;color:#fff;}
+    .logo-text .sub{font-size:11px;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;}
+    .header-right{display:flex;gap:10px;}
+    .btn-sm{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;text-decoration:none;}
+    .btn-green{background:linear-gradient(135deg,var(--green),#00a87e);color:#fff;box-shadow:0 3px 14px rgba(0,200,150,.3);}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
+    .btn-outline:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+    /* STAT CARDS */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;max-width:1100px;margin:0 auto 24px;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px;position:relative;overflow:hidden;}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--blue));}
+    .stat-icon{font-size:22px;color:var(--green);margin-bottom:12px;}
+    .stat-value{font-size:36px;font-weight:800;color:#fff;line-height:1;}
+    .stat-label{font-size:12px;color:var(--muted);margin-top:6px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+    .stat-pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:8px;}
+    .pill-green{background:var(--green-glow);color:var(--green);}
+    .pill-red{background:rgba(255,91,91,.1);color:#ff6b6b;}
+    /* CHARTS GRID */
+    .charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;max-width:1100px;margin:0 auto 24px;}
+    .chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+    .chart-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .chart-title i{color:var(--green);}
+    .chart-wrap{position:relative;height:220px;}
+    /* TABLE */
+    .table-wrap{max-width:1100px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+    .table-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);}
+    .table-title{font-size:14px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px;}
+    .table-title i{color:var(--green);}
+    table{width:100%;border-collapse:collapse;}
+    th{padding:12px 18px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
+    td{padding:13px 18px;font-size:13px;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:var(--bg3);}
+    .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600;}
+    .badge-yes{background:var(--green-glow);color:var(--green);}
+    .badge-no{background:rgba(255,91,91,.1);color:#ff6b6b;}
+    /* EMPTY */
+    .empty{text-align:center;padding:50px;color:var(--muted);}
+    .empty i{font-size:36px;margin-bottom:12px;display:block;color:rgba(138,148,168,.3);}
+    /* LOADING */
+    .loading{text-align:center;padding:40px;color:var(--muted);}
+    @media(max-width:600px){th,td{padding:10px 12px;} .stat-value{font-size:28px;}}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-row">
+    <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+    <div class="logo-text">
+      <div class="main">VisionAstraa EV Academy</div>
+      <div class="sub">Analytics Dashboard</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <a href="/form" class="btn-sm btn-outline"><i class="fa-solid fa-external-link"></i> View Form</a>
+    <button class="btn-sm btn-green" onclick="loadData()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+  </div>
+</div>
+
+<!-- STAT CARDS -->
+<div class="stat-grid" id="statGrid">
+  <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i></div>
+</div>
+
+<!-- CHARTS -->
+<div class="charts-grid" id="chartsGrid"></div>
+
+<!-- RECENT TABLE -->
+<div class="table-wrap">
+  <div class="table-head">
+    <div class="table-title"><i class="fa-solid fa-list"></i> Recent Submissions</div>
+  </div>
+  <div id="tableBody"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i></div></div>
+</div>
+
+<script>
+const GREEN = '#00c896', BLUE = '#1a6cff';
+const CHART_COLORS = ['#00c896','#1a6cff','#f59e0b','#8b5cf6','#ef4444','#ec4899','#06b6d4','#84cc16'];
+
+Chart.defaults.color = '#8a94a8';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+
+let charts = {};
+
+async function loadData() {
+  const res  = await fetch('/api/analytics');
+  const data = await res.json();
+
+  renderStats(data);
+  renderCharts(data);
+  renderTable(data.recent);
+}
+
+function renderStats(d) {
+  document.getElementById('statGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+      <div class="stat-value">${d.total}</div>
+      <div class="stat-label">Total Submissions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-value">${d.interested_yes}</div>
+      <div class="stat-label">Interested (Yes)</div>
+      <span class="stat-pill pill-green">${d.conversion_rate}% Conversion</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+      <div class="stat-value">${d.interested_no}</div>
+      <div class="stat-label">Not Interested (No)</div>
+      <span class="stat-pill pill-red">${d.total ? (100 - d.conversion_rate).toFixed(1) : 0}% Drop</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+      <div class="stat-value">${d.conversion_rate}%</div>
+      <div class="stat-label">Funnel Conversion Rate</div>
+    </div>
+  `;
+}
+
+function renderCharts(d) {
+  const grid = document.getElementById('chartsGrid');
+  grid.innerHTML = `
+    <div class="chart-card"><div class="chart-title"><i class="fa-solid fa-chart-pie"></i> Interest Breakdown</div><div class="chart-wrap"><canvas id="cInterest"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="fa-solid fa-graduation-cap"></i> Education Level</div><div class="chart-wrap"><canvas id="cEdu"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="fa-solid fa-code-branch"></i> Stream / Branch</div><div class="chart-wrap"><canvas id="cStream"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="fa-solid fa-briefcase"></i> Desired Roles</div><div class="chart-wrap"><canvas id="cRole"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="fa-solid fa-star"></i> Areas of Interest</div><div class="chart-wrap"><canvas id="cInterests"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title"><i class="fa-solid fa-tools"></i> Skills Distribution</div><div class="chart-wrap"><canvas id="cSkills"></canvas></div></div>
+  `;
+
+  // Destroy old charts
+  Object.values(charts).forEach(c => c.destroy());
+  charts = {};
+
+  charts.interest = makeDoughnut('cInterest',
+    ['Interested (Yes)', 'Not Interested (No)'],
+    [d.interested_yes, d.interested_no],
+    [GREEN, '#ef4444']
+  );
+  charts.edu    = makeBar('cEdu',    Object.keys(d.education),    Object.values(d.education));
+  charts.stream = makeBar('cStream', Object.keys(d.stream),       Object.values(d.stream), BLUE);
+  charts.role   = makeHBar('cRole',  Object.keys(d.roles),        Object.values(d.roles));
+  charts.ints   = makeBar('cInterests', Object.keys(d.interests), Object.values(d.interests), '#8b5cf6');
+  charts.skills = makeHBar('cSkills', Object.keys(d.skills),      Object.values(d.skills), '#f59e0b');
+}
+
+function makeDoughnut(id, labels, data, colors) {
+  return new Chart(document.getElementById(id), {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:2, borderColor:'#161d2e' }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ padding:16, usePointStyle:true } } } }
+  });
+}
+
+function makeBar(id, labels, data, color=GREEN) {
+  if (!labels.length) { showEmpty(id); return {}; }
+  return new Chart(document.getElementById(id), {
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor: color+'99', borderColor:color, borderWidth:1.5, borderRadius:6 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ ticks:{maxRotation:30} }, y:{ beginAtZero:true, ticks:{stepSize:1} } } }
+  });
+}
+
+function makeHBar(id, labels, data, color=GREEN) {
+  if (!labels.length) { showEmpty(id); return {}; }
+  return new Chart(document.getElementById(id), {
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:CHART_COLORS.map(c=>c+'99'), borderColor:CHART_COLORS, borderWidth:1.5, borderRadius:6 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ x:{ beginAtZero:true, ticks:{stepSize:1} } } }
+  });
+}
+
+function showEmpty(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.parentElement.innerHTML = '<div class="empty"><i class="fa-solid fa-chart-bar"></i>No data yet</div>';
+  }
+}
+
+function renderTable(rows) {
+  if (!rows || rows.length === 0) {
+    document.getElementById('tableBody').innerHTML = '<div class="empty"><i class="fa-solid fa-inbox"></i>No submissions yet</div>';
+    return;
+  }
+  let html = `<table><thead><tr>
+    <th>Name</th><th>Email</th><th>Interest</th><th>Role</th><th>Submitted At</th>
+  </tr></thead><tbody>`;
+  rows.forEach(r => {
+    const badge = r.interested === 'Yes'
+      ? '<span class="badge badge-yes">Yes</span>'
+      : '<span class="badge badge-no">No</span>';
+    html += `<tr>
+      <td>${r.name}</td>
+      <td>${r.email}</td>
+      <td>${badge}</td>
+      <td>${r.role}</td>
+      <td>${r.submitted_at}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableBody').innerHTML = html;
+}
+
+// Init
+loadData();
+</script>
+</body>
+</html>

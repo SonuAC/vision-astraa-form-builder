@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VisionAstraa EV Academy — Interest Form</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- ── PROGRESS BAR ── -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+  <span class="progress-label" id="progressLabel">0%</span>
+</div>
+
+<!-- ── FORM WRAPPER ── -->
+<div class="form-shell" id="formShell">
+
+  <!-- STEP 0 : WELCOME -->
+  <div class="step active" id="step-0" data-step="0">
+    <div class="company-logo">
+      <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+      <div class="logo-text">
+        <span class="logo-main">VisionAstraa</span>
+        <span class="logo-sub">EV Academy</span>
+      </div>
+    </div>
+    <h1 class="step-title">Welcome!</h1>
+    <p class="step-desc">
+      We are committed to shaping the future of the <strong>Electric Vehicle industry</strong>.<br/>
+      We bridge Academia and Industry — empowering students with skills to thrive in the EV sector.<br/><br/>
+      This form takes <strong>under 2 minutes</strong>. Let's get started!
+    </p>
+    <div class="tag-row">
+      <span class="tag"><i class="fa-solid fa-leaf"></i> Green Future</span>
+      <span class="tag"><i class="fa-solid fa-car-battery"></i> EV Technology</span>
+      <span class="tag"><i class="fa-solid fa-graduation-cap"></i> Industry-Ready</span>
+    </div>
+    <button class="btn-primary" onclick="goTo(1)">
+      Let's Begin <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </div>
+
+  <!-- STEP 1 : INTEREST QUESTION (KEY CONDITIONAL) -->
+  <div class="step" id="step-1" data-step="1">
+    <div class="step-number">01</div>
+    <h2 class="step-title">Are you interested in joining <span class="highlight">VisionAstraa EV Academy</span>?</h2>
+    <p class="step-desc">Tell us honestly — there's no wrong answer!</p>
+    <div class="choice-cards" id="interestCards">
+      <div class="choice-card" id="card-yes" onclick="selectInterest('Yes')">
+        <div class="choice-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="choice-label">Yes, I'm Interested!</div>
+        <div class="choice-sub">Take me through the full form</div>
+      </div>
+      <div class="choice-card" id="card-no" onclick="selectInterest('No')">
+        <div class="choice-icon no-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="choice-label">No, Not Right Now</div>
+        <div class="choice-sub">Submit & exit the form</div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(0)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 : NAME -->
+  <div class="step" id="step-2" data-step="2">
+    <div class="step-number">02</div>
+    <h2 class="step-title">What's your <span class="highlight">full name</span>?</h2>
+    <p class="step-desc">Let us know who you are.</p>
+    <div class="input-wrap">
+      <i class="fa-solid fa-user input-icon"></i>
+      <input type="text" id="inp-name" class="form-input" placeholder="e.g. Arjun Sharma" autocomplete="off"/>
+    </div>
+    <div class="error-msg" id="err-name">Please enter your full name.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" onclick="nextStep(2)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 3 : EMAIL + PHONE -->
+  <div class="step" id="step-3" data-step="3">
+    <div class="step-number">03</div>
+    <h2 class="step-title">Your <span class="highlight">contact details</span></h2>
+    <p class="step-desc">We'll use these only to reach you about the academy.</p>
+    <div class="input-wrap">
+      <i class="fa-solid fa-envelope input-icon"></i>
+      <input type="email" id="inp-email" class="form-input" placeholder="yourname@email.com" autocomplete="off"/>
+    </div>
+    <div class="error-msg" id="err-email">Please enter a valid email address.</div>
+    <div class="input-wrap" style="margin-top:16px">
+      <i class="fa-solid fa-phone input-icon"></i>
+      <input type="tel" id="inp-phone" class="form-input" placeholder="+91 98765 43210" autocomplete="off"/>
+    </div>
+    <div class="error-msg" id="err-phone">Please enter a valid 10-digit phone number.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" onclick="nextStep(3)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 4 : EDUCATION -->
+  <div class="step" id="step-4" data-step="4">
+    <div class="step-number">04</div>
+    <h2 class="step-title">What is your <span class="highlight">education level</span>?</h2>
+    <p class="step-desc">Select your highest qualification.</p>
+    <div class="option-list" id="eduList">
+      <div class="option-item" onclick="selectOption('education','10th / SSLC',this)">10th / SSLC</div>
+      <div class="option-item" onclick="selectOption('education','12th / HSC',this)">12th / HSC</div>
+      <div class="option-item" onclick="selectOption('education','Diploma',this)">Diploma</div>
+      <div class="option-item" onclick="selectOption('education','B.Tech / B.E.',this)">B.Tech / B.E.</div>
+      <div class="option-item" onclick="selectOption('education','M.Tech / M.E.',this)">M.Tech / M.E.</div>
+      <div class="option-item" onclick="selectOption('education','MBA / Other PG',this)">MBA / Other PG</div>
+    </div>
+    <div class="error-msg" id="err-education">Please select your education level.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(3)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" onclick="nextStep(4)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 5 : STREAM -->
+  <div class="step" id="step-5" data-step="5">
+    <div class="step-number">05</div>
+    <h2 class="step-title">What is your <span class="highlight">stream / branch</span>?</h2>
+    <p class="step-desc">Select the field you studied or are currently in.</p>
+    <div class="option-list" id="streamList">
+      <div class="option-item" onclick="selectOption('stream','Mechanical Engineering',this)">Mechanical Engineering</div>
+      <div class="option-item" onclick="selectOption('stream','Electrical Engineering',this)">Electrical Engineering</div>
+      <div class="option-item" onclick="selectOption('stream','Electronics & Communication',this)">Electronics & Communication</div>
+      <div class="option-item" onclick="selectOption('stream','Computer Science / IT',this)">Computer Science / IT</div>
+      <div class="option-item" onclick="selectOption('stream','Automobile Engineering',this)">Automobile Engineering</div>
+      <div class="option-item" onclick="selectOption('stream','Physics / Science',this)">Physics / Science</div>
+      <div class="option-item" onclick="selectOption('stream','Other',this)">Other</div>
+    </div>
+    <div class="error-msg" id="err-stream">Please select your stream.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(4)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" onclick="nextStep(5)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 6 : INTERESTS (MULTI-SELECT) -->
+  <div class="step" id="step-6" data-step="6">
+    <div class="step-number">06</div>
+    <h2 class="step-title">Which EV areas <span class="highlight">interest you</span>?</h2>
+    <p class="step-desc">Select all that apply — choose as many as you like.</p>
+    <div class="checkbox-grid" id="interestGrid">
+      <label class="checkbox-card"><input type="checkbox" value="EV Technology & Design"/><i class="fa-solid fa-car"></i> EV Technology & Design</label>
+      <label class="checkbox-card"><input type="checkbox" value="Battery Systems & BMS"/><i class="fa-solid fa-battery-full"></i> Battery Systems & BMS</label>
+      <label class="checkbox-card"><input type="checkbox" value="Motor Control & Drives"/><i class="fa-solid fa-gears"></i> Motor Control & Drives</label>
+      <label class="checkbox-card"><input type="checkbox" value="Charging Infrastructure"/><i class="fa-solid fa-charging-station"></i> Charging Infrastructure</label>
+      <label class="checkbox-card"><input type="checkbox" value="Power Electronics"/><i class="fa-solid fa-bolt"></i> Power Electronics</label>
+      <label class="checkbox-card"><input type="checkbox" value="Embedded Systems & IoT"/><i class="fa-solid fa-microchip"></i> Embedded Systems & IoT</label>
+      <label class="checkbox-card"><input type="checkbox" value="Autonomous Vehicles"/><i class="fa-solid fa-robot"></i> Autonomous Vehicles</label>
+      <label class="checkbox-card"><input type="checkbox" value="Research & Development"/><i class="fa-solid fa-flask"></i> Research & Development</label>
+    </div>
+    <div class="error-msg" id="err-interests">Please select at least one area of interest.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(5)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" onclick="nextStep(6)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 7 : SKILLS (MULTI-SELECT) -->
+  <div class="step" id="step-7" data-step="7">
+    <div class="step-number">07</div>
+    <h2 class="step-title">What are your current <span class="highlight">skills</span>?</h2>
+    <p class="step-desc">Select all the skills you currently have (even basic knowledge counts!).</p>
+    <div class="checkbox-grid" id="skillGrid">
+      <label class="checkbox-card"><input type="checkbox" value="Python / Programming"/><i class="fa-brands fa-python"></i> Python / Programming</label>
+      <label class="checkbox-card"><input type="checkbox" value="MATLAB / Simulink"/><i class="fa-solid fa-chart-line"></i> MATLAB / Simulink</label>
+      <label class="checkbox-card"><input type="checkbox" value="AutoCAD / SolidWorks"/><i class="fa-solid fa-ruler-combined"></i> AutoCAD / SolidWorks</label>
+      <label class="checkbox-card"><input type="checkbox" value="Circuit Design & PCB"/><i class="fa-solid fa-circle-nodes"></i> Circuit Design & PCB</label>
+      <label class="checkbox-card"><input type="checkbox" value="CAN / LIN Protocol"/><i class="fa-solid fa-network-wired"></i> CAN / LIN Protocol</label>
+      <label class="checkbox-card"><input type="checkbox" value="Arduino / Raspberry Pi"/><i class="fa-solid fa-microchip"></i> Arduino / Raspberry Pi</label>
+      <label class="checkbox-card"><input type="checkbox" value="Data Analysis"/><i class="fa-solid fa-database"></i> Data Analysis</label>
+      <label class="checkbox-card"><input type="checkbox" value="No specific skills yet"/><i class="fa-solid fa-seedling"></i> No specific skills yet</label>
+    </div>
+    <div class="error-msg" id="err-skills">Please select at least one option.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(6)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" onclick="nextStep(7)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 8 : DESIRED ROLE -->
+  <div class="step" id="step-8" data-step="8">
+    <div class="step-number">08</div>
+    <h2 class="step-title">What <span class="highlight">role</span> are you aiming for?</h2>
+    <p class="step-desc">What position do you see yourself in the EV industry?</p>
+    <div class="option-list" id="roleList">
+      <div class="option-item" onclick="selectOption('role','EV Design Engineer',this)">EV Design Engineer</div>
+      <div class="option-item" onclick="selectOption('role','Battery / BMS Engineer',this)">Battery / BMS Engineer</div>
+      <div class="option-item" onclick="selectOption('role','Motor & Drive Systems Engineer',this)">Motor & Drive Systems Engineer</div>
+      <div class="option-item" onclick="selectOption('role','Embedded Systems Engineer',this)">Embedded Systems Engineer</div>
+      <div class="option-item" onclick="selectOption('role','EV Consultant / Analyst',this)">EV Consultant / Analyst</div>
+      <div class="option-item" onclick="selectOption('role','Research Scientist / R&D',this)">Research Scientist / R&D</div>
+      <div class="option-item" onclick="selectOption('role','Entrepreneur / Startup',this)">Entrepreneur / Startup</div>
+      <div class="option-item" onclick="selectOption('role','Not decided yet',this)">Not decided yet</div>
+    </div>
+    <div class="error-msg" id="err-role">Please select a desired role.</div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(7)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" onclick="nextStep(8)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 9 : REVIEW & SUBMIT -->
+  <div class="step" id="step-9" data-step="9">
+    <div class="step-number">✓</div>
+    <h2 class="step-title">Almost done! <span class="highlight">Review & Submit</span></h2>
+    <p class="step-desc">Here's a summary of your responses. Hit submit when ready.</p>
+    <div class="review-box" id="reviewBox"></div>
+    <div class="nav-row">
+      <button class="btn-back" id="backFromReview" onclick="goTo(8)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <button class="btn-primary" id="submitBtn" onclick="submitForm()">
+        <i class="fa-solid fa-paper-plane"></i> Submit Form
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 10 : THANK YOU (YES) -->
+  <div class="step" id="step-10" data-step="10">
+    <div class="thank-you-icon"><i class="fa-solid fa-circle-check"></i></div>
+    <h2 class="step-title">You're All Set! 🎉</h2>
+    <p class="step-desc">
+      Thank you for your interest in <strong>VisionAstraa EV Academy</strong>!<br/>
+      Our team will reach out to you shortly with the next steps.<br/><br/>
+      Together, let's drive towards a <strong>greener tomorrow</strong>! 🌱⚡
+    </p>
+    <div class="social-links">
+      <span><i class="fa-solid fa-envelope"></i> info@visionastraa.com</span>
+      <span><i class="fa-solid fa-globe"></i> www.visionastraa.com</span>
+    </div>
+  </div>
+
+  <!-- STEP 11 : THANK YOU (NO) -->
+  <div class="step" id="step-11" data-step="11">
+    <div class="thank-you-icon no-thanks"><i class="fa-solid fa-handshake"></i></div>
+    <h2 class="step-title">Thanks for letting us know!</h2>
+    <p class="step-desc">
+      We appreciate you taking the time to respond.<br/>
+      Whenever you're ready, <strong>VisionAstraa EV Academy</strong> will be here for you.<br/><br/>
+      Wishing you all the best on your journey! 🚀
+    </p>
+    <div class="social-links">
+      <span><i class="fa-solid fa-envelope"></i> info@visionastraa.com</span>
+    </div>
+  </div>
+
+</div><!-- end .form-shell -->
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p>Submitting your form…</p>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
